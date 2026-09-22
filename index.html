@@ -519,13 +519,37 @@ textarea{width:100%}
     <li>Zustand wird sichtbar codiert: grün flugklar, gelb fällig, rot gesperrt oder Werft.</li>
     <li>Kennzeichen, Stunden und METAR immer in Monospace, damit Zahlen untereinander stehen.</li>
   </ul></div>
-  <div class="card"><h2>Technik-Vorschlag</h2><ul>
-    <li>Frontend: React mit TypeScript und Vite, Tailwind plus shadcn/ui als Komponentenbasis.</li>
-    <li>Designsystem als Tokens: Farben, Schrift, Abstände, hell und dunkel.</li>
-    <li>Ein API-Gateway vor den bestehenden Backends, schrittweise Zusammenführung.</li>
-    <li>Hosting auf Cloudflare Workers oder dem bestehenden Server, PWA für Handy-Startbildschirm.</li>
-    <li>Wetter über eine METAR-Quelle für LOWI, Buchungen später direkt an FlightOffice 24 gekoppelt.</li>
+  <div class="card"><h2>Technik-Vorschlag, Endausbau</h2><ul>
+    <li><b>Frontend:</b> React 19, TypeScript, Vite, TanStack Router und Query, Tailwind, shadcn/ui. PWA mit Web Push und Kamera.</li>
+    <li><b>Backend:</b> Node mit Fastify, OpenAPI aus zod, ein Vertrag für beide Seiten. PostgreSQL mit Drizzle, Jobs mit pg-boss.</li>
+    <li><b>Motordaten:</b> Python-Dienst mit pandas, per HTTP angebunden, übernimmt den bestehenden Analyzer.</li>
+    <li><b>Login:</b> Keycloak, OIDC mit PKCE, Rollen Pilot, Fluglehrer, Technik, Büro.</li>
+    <li><b>Dateien:</b> Cloudflare R2 für Dokumente, Mangelfotos, PDF. Nextcloud bleibt für Vereinsdokumente.</li>
+    <li><b>Hosting:</b> Docker Compose auf einem Hetzner-Server, Caddy, Cloudflare davor. GitHub Actions, Sentry, nächtliches Backup nach R2.</li>
   </ul></div>
+  <div class="card wide">
+    <div class="ch"><h2>Stack im Detail</h2><span class="note">Monorepo mit pnpm und Turborepo: apps/web, apps/api, apps/engine, packages/ui, packages/db</span></div>
+    <div class="scroll"><table class="tbl" style="min-width:720px">
+      <thead><tr><th>Schicht</th><th>Wahl</th><th>Warum</th></tr></thead>
+      <tbody>
+        <tr><td><b>Frontend</b></td><td>React 19, TypeScript, Vite, TanStack Router und Query, Tailwind, shadcn/ui</td><td>Maintenance Tool und Smart-Booking-Demo sind schon React, größter Entwicklerpool</td></tr>
+        <tr><td><b>Diagramme</b></td><td>ECharts für Reports, uPlot für Motorkurven</td><td>Motorkurven brauchen Zoom bei tausenden Punkten</td></tr>
+        <tr><td><b>Formulare</b></td><td>react-hook-form mit zod</td><td>Ein Schema für M&amp;B, Mangelmeldung, Buchung, im Backend gleich validiert</td></tr>
+        <tr><td><b>App am Handy</b></td><td>PWA mit vite-plugin-pwa, Web Push</td><td>Startbildschirm, Kamera für Mangelfotos, Push bei Kennzeichen-Fixierung, kein App-Store</td></tr>
+        <tr><td><b>Backend</b></td><td>Node, Fastify, TypeScript, OpenAPI aus zod</td><td>Generierte Clients, kein Drift zwischen Frontend und API</td></tr>
+        <tr><td><b>Datenbank</b></td><td>PostgreSQL mit Drizzle ORM</td><td>Eine Datenbank für Flotte, Mängel, Buchungen, Reports, Auswertungen</td></tr>
+        <tr><td><b>Jobs</b></td><td>pg-boss</td><td>Imports, METAR, Prognosen ohne zweites System wie Redis</td></tr>
+        <tr><td><b>Motordaten</b></td><td>Python-Dienst mit pandas</td><td>Bestehender Analyzer lässt sich übernehmen</td></tr>
+        <tr><td><b>Login</b></td><td>Keycloak, OIDC mit PKCE</td><td>Läuft schon für Metrics, später Passkeys</td></tr>
+        <tr><td><b>Dateien</b></td><td>Cloudflare R2</td><td>S3-kompatibel, günstig, Nextcloud bleibt für Vereinsdokumente</td></tr>
+        <tr><td><b>Externe Daten</b></td><td>FlightOffice 24 per API oder CSV-Import, METAR von aviationweather.gov</td><td>Flugbuch und Buchungen bleiben in FO24, das Portal spiegelt</td></tr>
+        <tr><td><b>Hosting</b></td><td>Docker Compose auf Hetzner, Caddy, Cloudflare davor</td><td>Postgres und Python brauchen einen Server, Cloudflare gibt DNS, WAF, Zugriffsschutz</td></tr>
+        <tr><td><b>Betrieb</b></td><td>GitHub Actions, release-please, Sentry, Uptime Kuma, pg_dump nach R2</td><td>Wie bei den bestehenden Workern eingespielt</td></tr>
+        <tr><td><b>Tests</b></td><td>Vitest, Playwright, Vertragstests gegen die OpenAPI</td><td>Kernflüsse Buchen, Mangel melden, M&amp;B laufen automatisch durch</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note mt">Bewusst nicht: Next.js oder Server-Rendering hinter Login, Cloudflare Workers plus D1 als Hauptplattform, eigener Login. Ist das Team in .NET oder Python im Backend stärker, bleibt der API-Vertrag gleich und nur das Backend wechselt die Sprache.</p>
+  </div>
   <div class="card"><h2>Reihenfolge</h2><ul>
     <li><b>1.</b> Shell, Login, Startseite, Flotte, Links zu Cloud und FlightOffice 24.</li>
     <li><b>2.</b> Reports übernehmen: Piloten, Flugzeuge, Schule, Fluglehrer, Segelflug.</li>
