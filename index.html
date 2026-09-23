@@ -1216,7 +1216,7 @@ document.querySelectorAll('.seg.sm').forEach(g=>g.querySelectorAll('button').for
 function setMode(m){ document.getElementById('concept').classList.toggle('on',m==='concept'); document.getElementById('stage').style.display=m==='concept'?'none':'flex'; document.getElementById('mode-app').setAttribute('aria-pressed',m==='app'); document.getElementById('mode-concept').setAttribute('aria-pressed',m==='concept'); }
 function setDevice(d){ document.getElementById('frame').classList.toggle('phone',d==='phone'); document.getElementById('dev-desk').setAttribute('aria-pressed',d==='desk'); document.getElementById('dev-phone').setAttribute('aria-pressed',d==='phone'); }
 function setTheme(t){ if(t) document.documentElement.setAttribute('data-theme',t); else document.documentElement.removeAttribute('data-theme'); ['sys','light','dark'].forEach(k=>document.getElementById('th-'+k).setAttribute('aria-pressed',(t||'sys')===k)); try{localStorage.setItem('fzt-theme',t||'sys')}catch(e){} }
-setTheme(window.__fztTheme||'light');
+setTheme(typeof window.__fztTheme==='string'?window.__fztTheme:'light');
 
 /* ---------- Booking wizard ---------- */
 let model='Aquila', kind='Reise';
